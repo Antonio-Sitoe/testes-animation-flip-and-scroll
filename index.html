@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <title>Document</title>
+  <style>
+    .container {
+      border: 1px solid red;
+      display: grid;
+    }
+
+    .row {
+      margin-top: 2rem;
+      border: 1px solid blue;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 70vh;
+      position: relative;
+    }
+
+    .title {
+      border: 1px solid red;
+      position: fixed;
+    }
+
+    .show {
+      display: initial;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    [data-title="2"] {
+      display: none;
+    }
+
+    [data-title="3"] {
+      display: none;
+    }
+
+    [data-row="3"] {
+      margin-bottom: 60rem;
+    }
+
+    .animacao-saida {
+      animation: animacao-saida 0.6s ease-out;
+    }
+
+    @keyframes animacao-saida {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+
+      100% {
+
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row" data-row="1">
+      <h1 class="title" data-title="1">POSICAO 1</h1>
+      <h1 class="title" data-title="2">POSICAO 2</h1>
+      <h1 class="title" data-title="3">POSICAO 3</h1>
+    </div>
+    <div class="row" data-row="2"></div>
+    <div class="row" data-row="3"></div>
+  </div>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+  <script>
+    function getTopElement(element) {
+      const initial = Math.floor(element.getBoundingClientRect().top)
+
+
+      return {
+        initial: initial - 200,
+        final: initial + 200,
+        top: initial
+      }
+    }
+    const firstRow = document.querySelector('[data-row="1"]')
+    const secondRow = document.querySelector('[data-row="2"]')
+    const thirtRow = document.querySelector('[data-row="3"]')
+
+    const title1 = document.querySelector('[data-title="1"]')
+    const title2 = document.querySelector('[data-title="2"]')
+    const title3 = document.querySelector('[data-title="3"]')
+    var previousScrollPosition = window.pageYOffset;
+
+    function scrollForBottom() {
+      const firstRowScrolltop = getTopElement(secondRow);
+      const title1Scrolltop = getTopElement(title1);
+      const thirtRowScrollTop = getTopElement(thirtRow);
+
+
+
+      if (firstRowScrolltop.top < 536) {
+        title1.setAttribute("data-aos", "zoom-in-down")
+        console.log("Desaparece 1")
+      }
+      if (firstRowScrolltop.top <= 450) {
+        title1.style.display = "none";
+        title2.style.display = "initial";
+        title2.classList.add("animacao-saida")
+        console.log("APARECE 2")
+      }
+      if (thirtRowScrollTop.top <= 560) {
+        title2.setAttribute("data-aos", "zoom-in-down")
+        console.log("DESAPRECE 2")
+      }
+      if (thirtRowScrollTop.top <= 450) {
+        console.log("APARECE 3")
+        title2.style.display = "none";
+        title3.style.display = "initial";
+        title3.classList.add("animacao-saida")
+      }
+
+    }
+    function scrollForTop() {
+      console.log("Para cimas")
+    }
+
+
+
+
+    window.addEventListener('scroll', (event) => {
+      var currentScrollPosition = window.pageYOffset;
+      if (currentScrollPosition > previousScrollPosition) {
+        scrollForBottom()
+
+      } else {
+        scrollForTop()
+
+      }
+      previousScrollPosition = window.pageYOffset;
+
+    })
+  </script>
+
+</body>
+
+</html>
