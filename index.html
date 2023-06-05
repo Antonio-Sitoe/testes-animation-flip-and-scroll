@@ -86,12 +86,14 @@
   <script>
     function getTopElement(element) {
       const initial = Math.floor(element.getBoundingClientRect().top)
+      const bottom = Math.floor(element.getBoundingClientRect().bottom)
 
 
       return {
         initial: initial - 200,
         final: initial + 200,
-        top: initial
+        top: initial,
+        bottom: bottom
       }
     }
     const firstRow = document.querySelector('[data-row="1"]')
@@ -103,53 +105,63 @@
     const title3 = document.querySelector('[data-title="3"]')
     var previousScrollPosition = window.pageYOffset;
 
-    function scrollForBottom() {
-      const firstRowScrolltop = getTopElement(secondRow);
+    function scrollforTop() {
+
+      const firstRowScrolltop = getTopElement(firstRow);
       const title1Scrolltop = getTopElement(title1);
       const thirtRowScrollTop = getTopElement(thirtRow);
 
 
-
-      if (firstRowScrolltop.top < 536) {
-        title1.setAttribute("data-aos", "zoom-in-down")
-        console.log("Desaparece 1")
+      if (firstRowScrolltop.bottom >= 270) {
+        title2.classList.add("animacao-saida")
+        title1.style.display = "initial";
+        title2.style.display = "none";
+        title1.removeAttribute("data-aos")
       }
-      if (firstRowScrolltop.top <= 450) {
+
+      if (firstRowScrolltop.bottom <= 270 && thirtRowScrollTop.bottom >= 1000) {
+        title2.style.display = "initial";
+        title3.style.display = "none";
+
+        title2.classList.add("animacao-saida")
+        title2.removeAttribute("data-aos")
+      }
+    }
+
+    function scrollForBottom() {
+      const secondRowScrolltop = getTopElement(secondRow);
+      const title1Scrolltop = getTopElement(title1);
+      const thirtRowScrollTop = getTopElement(thirtRow);
+
+
+      if (secondRowScrolltop.top < 536) {
+        title1.setAttribute("data-aos", "zoom-in-down")
+      }
+      if (secondRowScrolltop.top <= 450) {
         title1.style.display = "none";
         title2.style.display = "initial";
         title2.classList.add("animacao-saida")
-        console.log("APARECE 2")
       }
       if (thirtRowScrollTop.top <= 560) {
         title2.setAttribute("data-aos", "zoom-in-down")
-        console.log("DESAPRECE 2")
       }
       if (thirtRowScrollTop.top <= 450) {
-        console.log("APARECE 3")
         title2.style.display = "none";
         title3.style.display = "initial";
         title3.classList.add("animacao-saida")
       }
-
     }
-    function scrollForTop() {
-      console.log("Para cimas")
-    }
-
-
 
 
     window.addEventListener('scroll', (event) => {
       var currentScrollPosition = window.pageYOffset;
+
       if (currentScrollPosition > previousScrollPosition) {
         scrollForBottom()
-
       } else {
-        scrollForTop()
-
+        scrollforTop()
       }
       previousScrollPosition = window.pageYOffset;
-
     })
   </script>
 
