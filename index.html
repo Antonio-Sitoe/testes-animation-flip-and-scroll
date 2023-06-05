@@ -37,32 +37,31 @@
       display: none;
     }
 
-    [data-title="2"] {
+    .title-2 {
       display: none;
     }
 
-    [data-title="3"] {
+    .title-3 {
       display: none;
     }
 
-    [data-row="3"] {
+    .row-3 {
       margin-bottom: 60rem;
     }
 
     .animacao-saida {
-      animation: animacao-saida 0.6s ease-out;
+      animation: animacao-saida 0.6s;
     }
 
     @keyframes animacao-saida {
-      0% {
-        opacity: 0;
-        transform: scale(0);
+      from {
+        /* opacity: 0; */
+        transform: rotateX(180deg);
       }
 
-      100% {
-
-        opacity: 1;
-        transform: scale(1);
+      to {
+        /* opacity: 1; */
+        transform: rotateX(360deg);
       }
     }
   </style>
@@ -71,24 +70,32 @@
 <body>
 
   <div class="container">
-    <div class="row" data-row="1">
-      <h1 class="title" data-title="1">POSICAO 1</h1>
-      <h1 class="title" data-title="2">POSICAO 2</h1>
-      <h1 class="title" data-title="3">POSICAO 3</h1>
+    <div class="row row-1" data-row="1">
+      <h1 class="title title-1">POSICAO 1</h1>
+      <h1 class="title title-2" data-title="2">POSICAO 2</h1>
+      <h1 class="title title-3" data-title="3">POSICAO 3</h1>
     </div>
-    <div class="row" data-row="2"></div>
-    <div class="row" data-row="3"></div>
+    <div class="row row-2" data-row="2"></div>
+    <div class="row row-3" data-row="3"></div>
   </div>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
     AOS.init();
   </script>
   <script>
+
+    const firstRow = document.querySelector('.row-1')
+    const secondRow = document.querySelector('.row-2')
+    const thirtRow = document.querySelector('.row-3')
+
+    const title1 = document.querySelector('.title-1')
+    const title2 = document.querySelector('.title-2')
+    const title3 = document.querySelector('.title-3')
+    var previousScrollPosition = window.pageYOffset;
+
     function getTopElement(element) {
       const initial = Math.floor(element.getBoundingClientRect().top)
       const bottom = Math.floor(element.getBoundingClientRect().bottom)
-
-
       return {
         initial: initial - 200,
         final: initial + 200,
@@ -96,66 +103,57 @@
         bottom: bottom
       }
     }
-    const firstRow = document.querySelector('[data-row="1"]')
-    const secondRow = document.querySelector('[data-row="2"]')
-    const thirtRow = document.querySelector('[data-row="3"]')
-
-    const title1 = document.querySelector('[data-title="1"]')
-    const title2 = document.querySelector('[data-title="2"]')
-    const title3 = document.querySelector('[data-title="3"]')
-    var previousScrollPosition = window.pageYOffset;
-
     function scrollforTop() {
-
       const firstRowScrolltop = getTopElement(firstRow);
-      const title1Scrolltop = getTopElement(title1);
       const thirtRowScrollTop = getTopElement(thirtRow);
 
-
       if (firstRowScrolltop.bottom >= 270) {
-        title2.classList.add("animacao-saida")
         title1.style.display = "initial";
         title2.style.display = "none";
         title1.removeAttribute("data-aos")
       }
-
       if (firstRowScrolltop.bottom <= 270 && thirtRowScrollTop.bottom >= 1000) {
         title2.style.display = "initial";
         title3.style.display = "none";
-
         title2.classList.add("animacao-saida")
         title2.removeAttribute("data-aos")
       }
     }
-
     function scrollForBottom() {
       const secondRowScrolltop = getTopElement(secondRow);
-      const title1Scrolltop = getTopElement(title1);
       const thirtRowScrollTop = getTopElement(thirtRow);
 
-
-      if (secondRowScrolltop.top < 536) {
-        title1.setAttribute("data-aos", "zoom-in-down")
+      if (secondRowScrolltop.top < 536 && secondRowScrolltop.top > 450) {
+        title1.setAttribute("data-aos", "zoom-in-down");
+        title1.classList.add("animacao-saida");
+        console.log("LOG 0")
       }
-      if (secondRowScrolltop.top <= 450) {
+      if (secondRowScrolltop.top <= 450 && thirtRowScrollTop.top > 560) {
+        // removendo o 1
+        title1.removeAttribute("data-aos");
         title1.style.display = "none";
+
+        //  Adicionando o 2
         title2.style.display = "initial";
         title2.classList.add("animacao-saida")
+        console.log("log 1")
       }
-      if (thirtRowScrollTop.top <= 560) {
+      if (thirtRowScrollTop.top <= 560 && thirtRowScrollTop.top > 450) {
         title2.setAttribute("data-aos", "zoom-in-down")
+        console.log("log 2")
       }
       if (thirtRowScrollTop.top <= 450) {
+        // removendo o 2
+        title2.removeAttribute("data-aos")
         title2.style.display = "none";
+        // adcionado 3
         title3.style.display = "initial";
         title3.classList.add("animacao-saida")
       }
     }
 
-
     window.addEventListener('scroll', (event) => {
       var currentScrollPosition = window.pageYOffset;
-
       if (currentScrollPosition > previousScrollPosition) {
         scrollForBottom()
       } else {
